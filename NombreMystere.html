@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title> /> MDN Tuto </title>
+
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+      }
+
+      .lastResult {
+        color: white;
+        padding: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+      <h1> Deviner un Nombre </h1>
+
+    <p> Nous avons généré un nombre aléatoire entre 1 et 100 tentez de le trouver en 10 essai maximum . A chaque tentative nous vous dirons si votre estimation est trop ou pas assez elevée. </p>
+
+    <div class="form">
+      <label for="guessField">Entrer un nombre : </label><input type="text" id="guessField" class="guessField">
+      <input type="submit" value="envoyer" class="guessSubmit">
+    </div>
+
+    <div class="resultParas">
+      <p class="guesses"></p>
+      <p class="lastResult"></p>
+      <p class="lowOrHi"></p>
+    </div>
+
+    <script>
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+        let guesses = document.querySelector('.guesses');
+        let lastResult = document.querySelector('.lastResult');
+        let lowOrHi = document.querySelector('.lowOrHi');
+
+        let guessSubmit = document.querySelector('.guessSubmit');
+        let guessField = document.querySelector('.guessField');
+
+        let guessCount = 1;
+        let resetButton;
+
+        function checkGuess()  {
+            let userGuess = Number(guessField.value);
+            if (guessCount === 1) {
+                guesses.textContent = 'Proposition Précèdentes : ' ;
+            }
+            guesses.textContent += userGuess + ' ' ;
+
+            if (userGuess === randomNumber) {
+                lastResult.textContent = 'Bravo vous avez trouvé le nombre mystère ! ';
+                lastResult.style.backgroundColor = 'Green';
+                lowOrHi.textContent = ' ';
+                setGameOver();
+            } else if (guessCount === 10) {
+                lastResult.textContent = ' Vous avez perdu ! : - (  ';
+                setGameOver();
+            } else {
+                lastResult.textContent = ' - Faux - ';
+                lastResult.style.backgroundColor = 'red';
+                if (userGuess < randomNumber) {
+                    lowOrHi.textContent = ' Le nombre est trop petit ! ';
+                } else if (userGuess > randomNumber) {
+                    lowOrHi.textContent = ' Le nombre est trop grand ! ';
+                }
+            }
+            guessCount++;
+            guessField.value = ' ';
+            guessField.focus();
+        }
+        guessSubmit.addEventListener('click', checkGuess);
+
+        function setGameOver() {
+            guessField.disabled = true;
+            guessSubmit.disabled = true;
+            resetButton = document.createElement('button');
+            resetButton.textContent = ' Relancer une partie ? ';
+            document.body.appendChild(resetButton);
+            resetButton.addEventListener('click', resetGame);
+        }
+        function resetGame() {
+            guessCount = 1;
+
+            let resetParas = document.querySelectorAll('.resultParas p');
+            for (let i = 0; i < resetParas.length; i++) {
+                resetParas[i].textContent = ' ';
+            }
+            resetButton.parentNode.removeChild(resetButton);
+
+            guessField.disabled = false;
+            guessSubmit.disabled = false;
+            guessField.value = ' ';
+            guessField.focus();
+
+            lastResult.style.backgroundColor = 'white';
+
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+        }
+    </script>
+  </body>
+</html>
